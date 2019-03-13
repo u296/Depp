@@ -2,7 +2,7 @@ import asyncio
 from aiohttp import web
 
 async def GetrequestHandler():
-        return web.json_response({"anwser":"brööd"})
+    return web.json_response({"anwser":"brööd"})
 
 async def PostrequestHandler():
     pass
