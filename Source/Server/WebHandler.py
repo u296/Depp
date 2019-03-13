@@ -1,12 +1,32 @@
+import asyncio
 from aiohttp import web
 
-async def GetHandler(request):
+async def GetrequestHandler():
+        return web.json_response({"anwser":"brööd"})
+
+async def PostrequestHandler():
     pass
 
-async def PostHandler(request):
-    pass
+routes = web.RouteTableDef()
+    
+@routes.get('/')
+async def GetresponseHandler(request):
+    response = await asyncio.create_task(GetrequestHandler())
+    return response
 
-class WebServer:
-    """
-    Container for web server, use run() method to start
-    """
+@routes.post('/post')
+async def PostresponseHandler(request):
+    response = await asyncio.create_task(PostrequestHandler())
+    return response
+
+class WebServer():
+    
+
+    def __init__(self):
+        self.app = web.Application()
+        self.app.add_routes(routes)
+
+    def run(self):
+        web.run_app(self.app)
+    
+    
