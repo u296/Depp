@@ -8,7 +8,7 @@ class WebClient:
 
     async def Get(self, data):
         async with self.session:
-            async with self.session.get("http://" + self.url) as response:
+            async with self.session.get("http://" + self.url, params=data) as response:
                 jsonResponse = await response.json()
                 return jsonResponse
     
