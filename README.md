@@ -5,9 +5,9 @@ Minecraft mod dependency manager
 
 Backend:
 
-Todd: web server, request handling
+Todd: Web server, request handling
 
-Ivan: google api interface
+Ivan: Google API interface
 
 Unassigned:
 
@@ -15,4 +15,4 @@ Unassigned:
 
 Frontend:
 
-Unassigned: command line interface
+Unassigned: Command line interface
