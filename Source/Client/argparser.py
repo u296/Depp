@@ -3,7 +3,10 @@ import re
 def GetRunmode(args):
     if len(args) < 2:
         raise Exception
-    runMode = {}
+
+    argumentRequiringOptions = ['-o']
+
+    runMode = {'data':[]}
     args.pop(0)
     runMode['command'] = args[0]
     args.pop(0)
@@ -13,7 +16,7 @@ def GetRunmode(args):
 
     awaitingValue = False
 
-    for arg in args:
+    for arg in args:    # Reserved options
         if arg == '-v' or arg.lower() == '--verbose':
             runMode['logLevel'] = 'verbose'
         elif arg == '-s' or arg.lower() == '--silent':
@@ -21,14 +24,18 @@ def GetRunmode(args):
         elif arg == '-d' or arg.lower() == '--default':
             runMode['logLevel'] = 'default'
             
-        elif re.search("^-", arg) != None:
+        elif re.search("^-", arg) != None:  # If argument is an option
             runMode[arg] = ""
-            key = arg
-            awaitingValue = True
-        elif re.search("^(!?-)", arg) == None and awaitingValue:
+            if arg in argumentRequiringOptions: # If option requires an argument
+                key = arg
+                awaitingValue = True
+        elif awaitingValue and re.search("^(!?-)", arg) == None:    # If an option is awaiting an argument
             runMode[key] = arg
             awaitingValue = False
+        elif awaitingValue:
+            raise IndexError
         else:
+            runMode['data'].append(arg)
             awaitingValue = False
         
         
