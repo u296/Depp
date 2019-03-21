@@ -29,7 +29,7 @@ def GetRunmode(args):
             if arg in argumentRequiringOptions: # If option requires an argument
                 key = arg
                 awaitingValue = True
-        elif awaitingValue and re.search("^(!?-)", arg) == None:    # If an option is awaiting an argument
+        elif awaitingValue and re.search(r"^(!?-)", arg) == None:    # If an option is awaiting an argument
             runMode[key] = arg
             awaitingValue = False
         elif awaitingValue:

@@ -32,7 +32,7 @@ async def main():
                 if '-o' in runMode:
                     modInstallPath = runMode['-o']
                 
-                if '-l' in runMode:
+                if '-l' in runMode:     # EXPAND MODBASE
                     installedMods = []
 
                     for root, dirs, files in os.walk(f'.\\{modInstallPath}'):
@@ -41,9 +41,15 @@ async def main():
                                 print(file)
                                 installedMods.append(file)
 
-                elif '-r' in runMode:
+                elif '-r' in runMode:   # FORCE MOD REINSTALL
 
-                    modsToInstall = set()
+                    modsToInstall = list()
+
+                    # modsToInstall is a list of mods that the program will later use
+                    # to install the correct mods. It must also includes dependencies
+                    # of correct versions of mods and must make sure that no overlapping
+                    # dependencies exist. such as modB requires 1.0 <= modA <= 2.0 but
+                    # modC requires 2.1 <= modA <= 2.3
 
                     for info in runMode['data']:
                         mod = info.split('||')[0]
@@ -54,35 +60,48 @@ async def main():
                         except IndexError as e:
                             pass
                         if version.lower() == 'max' or version == '':
-                                version = await httpClient.Get({
+                            version = await httpClient.Get({
                                     'requestType':'modVersionCheck',
                                     'mod':mod,
                                     'data':'max'
                                     })['version']
-                                if re.search('^([0-9]+\.?)*[0-9]+$', version) == None:
-                                    ProgramQuit(f"Failed: Invalid mod version data: '{version}'")
+                            if re.search(r'^([0-9]+\.?)*[0-9]+$', version) == None:
+                                ProgramQuit(f"Failed: Invalid mod version data: '{version}'")
 
-                                modDependencies = await httpClient.Get({
-                                    'requestType':'getDependencies',
-                                    'mod':mod,
-                                    'data':''
-                                })['dependencies']
+                            modDependencies = await httpClient.Get({
+                                'requestType':'getDependencies',
+                                'mod':mod,
+                                'data':''
+                            })['dependencies']
 
-                                for dependency in modDependencies:
-                                    modsToInstall.add(mod.ModDependency(dependency['name'], dependency['minVersion'], dependency['maxVersion']))
+                            for dependency in modDependencies:
+                                dependency = mod.ModDependency(dependency['modName'], dependency['minVersion'], dependency['maxVersion'])
+
+                            for dependency in modDependencies:
+                                if dependency.modName in [dep.modName for dep in modsToInstall]:
+                                    for i in range(len(modsToInstall)):
+                                        if modsToInstall[i].modName == dependency.modName:
+                                            replacer = modsToInstall[i].Merge(dependency)
+                                            modsToInstall.pop(i)
+                                            modsToInstall.insert(i, replacer)
+                                            break
+                                else:
+                                    modsToInstall.append(dependency)
+
+
 
 
 
                     
-                    for file in os.listdir(modInstallPath):
-                        filePath = os.path.join(modInstallPath, file)
-                        try:
-                            if os.path.isfile(filePath):
-                                os.unlink(filePath)
-                            elif os.path.isdir(filePath):
-                                shutil.rmtree(filePath)
-                        except Exception as e:
-                            ProgramQuit(f"Failed: Couldn't empty directory '{modInstallPath}': {e}")
+                    #for file in os.listdir(modInstallPath):
+                    #    filePath = os.path.join(modInstallPath, file)
+                    #    try:
+                    #        if os.path.isfile(filePath):
+                    #            os.unlink(filePath)
+                    #        elif os.path.isdir(filePath):
+                    #            shutil.rmtree(filePath)
+                    #    except Exception as e:
+                    #        ProgramQuit(f"Failed: Couldn't empty directory '{modInstallPath}': {e}")
 
                    
 
