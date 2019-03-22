@@ -1,0 +1,36 @@
+{
+    "modname":{
+        "1.12.2":{
+            "latest_version":{
+                "download_url":"http://example.com/mod1.0.jar",
+                "dependencies":[
+                    {
+                        "mod_name":"foo",
+                        "min_version":"1.0.0",
+                        "max_version":"1.2.3"
+                    },
+                    {
+                        "mod_name":"bar",
+                        "min_version":"2.0",
+                        "max_version":"2.14"
+                    }
+                ]
+            },
+            "1.0":{
+                "download_url":"http://example.com/mod1.0.jar",
+                "dependencies":[
+                    {
+                        "mod_name":"foo",
+                        "min_version":"1.0.0",
+                        "max_version":"1.2.3"
+                    },
+                    {
+                        "mod_name":"bar",
+                        "min_version":"2.0",
+                        "max_version":"2.14"
+                    }
+                ]
+            }
+        }
+    }
+}

@@ -1,0 +1,35 @@
+"modname":{ // modname contains minecraft versions
+    "1.12.2":{ // every minecraft version contains "latest version" alongside all other versions supported for the minecraft version.
+               // "latest version" is a duplicate object of the latest mod version
+        "latest_version":{
+            "download_url":"http://example.com/mod1.0.jar",
+            "dependencies":[
+                {
+                    "mod_name":"foo",
+                    "min_version":"1.0.0",
+                    "max_version":"1.2.3"
+                },
+                {
+                    "mod_name":"bar",
+                    "min_version":"2.0",
+                    "max_version":"2.14"
+                }
+            ]
+        },
+        "1.0":{
+            "download_url":"http://example.com/mod1.0.jar",
+            "dependencies":[
+                {
+                    "mod_name":"foo",
+                    "min_version":"1.0.0",
+                    "max_version":"1.2.3"
+                },
+                {
+                    "mod_name":"bar",
+                    "min_version":"2.0",
+                    "max_version":"2.14"
+                }
+            ]
+        }
+    }
+}

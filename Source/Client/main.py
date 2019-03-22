@@ -27,7 +27,6 @@ async def main():
             if runMode['command'] == 'install':
                 httpClient = webclient.WebClient("192.168.0.100:8080")
                 modInstallPath = 'mods'
-                nonInstalledMods = []
 
                 if '-o' in runMode:
                     modInstallPath = runMode['-o']
@@ -48,31 +47,27 @@ async def main():
                     # modsToInstall is a list of mods that the program will later use
                     # to install the correct mods. It must also includes dependencies
                     # of correct versions of mods and must make sure that no overlapping
-                    # dependencies exist. such as modB requires 1.0 <= modA <= 2.0 but
-                    # modC requires 2.1 <= modA <= 2.3
+                    # dependencies exist.
+                    # Example:
+                    # 
+                    # modB requires 1.0 <= modA <= 2.0 but  modC requires 2.1 <= modA
+                    # <= 2.3
 
-                    for info in runMode['data']:
-                        mod = info.split('||')[0]
-                        version = ""
+                    for info in runMode['data']: # For string in data argument list
+                        mod = info.split('||')[0] # Mod is string splitted at || at index 0
+                        version = "" # Set version to empty for now
 
                         try:
-                            version = info.split('||')[1]
-                        except IndexError as e:
+                            version = info.split('||')[1] #
+                        except IndexError:
                             pass
-                        if version.lower() == 'max' or version == '':
-                            version = await httpClient.Get({
-                                    'requestType':'modVersionCheck',
-                                    'mod':mod,
-                                    'data':'max'
-                                    })['version']
-                            if re.search(r'^([0-9]+\.?)*[0-9]+$', version) == None:
+                        if version.lower() == 'max' or version.lower() == 'latest' or version == '':
+                            version = None # TODO: set version to maximum through API
+
+                            if re.search(r'^([0-9]+\.?)*[0-9]+$', version) == None: # Validate that mod version is in a valid format
                                 ProgramQuit(f"Failed: Invalid mod version data: '{version}'")
 
-                            modDependencies = await httpClient.Get({
-                                'requestType':'getDependencies',
-                                'mod':mod,
-                                'data':''
-                            })['dependencies']
+                            modDependencies = [] # TODO: set modDependencies to a list of dependencies of the mod
 
                             for dependency in modDependencies:
                                 dependency = mod.ModDependency(dependency['modName'], dependency['minVersion'], dependency['maxVersion'])
